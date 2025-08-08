@@ -37,3 +37,11 @@ class EmpresaMensajeria:
             iguales = [x for x in lista if x.paquetes == pivote.paquetes]
             menores = [x for x in lista[1:] if x.paquetes < pivote.paquetes]
             return self.quick_sort(mayores) + iguales + self.quick_sort(menores)
+
+    def mostrar_ranking(self):
+        print("=== Ranking de Repartidores ===")
+        ordenados = self.ordenar_por_paquetes()
+        i = 1
+        for r in ordenados:
+            print(f"{i}. {r}")
+            i += 1
