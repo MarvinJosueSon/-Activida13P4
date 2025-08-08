@@ -1,47 +1,95 @@
-class Repartidor:
-    def __init__(self, nombre,paquetes,zona):
-        self.nombre = nombre
-        self.paquetes = paquetes
-        self.zona = zona
-    def __str__(self):
-        return self.nombre + " " + self.paquetes + " " + self.zona
+def ingresarRepartidores():
+    cantidad = int(input("Cantidad de repartidores a ingresar: "))
+    repartidores = {}
+    i = 1
+    while i <= cantidad:
+        print(f"\nIngreso del repartidor #{i}")
+        nombre = input("Nombre: ")
+        if nombre in repartidores:
+            print("Ya existe ese repartidor.")
+            continue
+        zona = input("Zona: ")
+        paquetes = int(input("Cantidad de paquetes entregados: "))
+        repartidores[nombre] = {
+            "zona": zona,
+            "paquetes": paquetes
+        }
+        i += 1
+    return repartidores
 
-class EmpresaMensajeria:
-    def __init__(self):
-        self.repartidores = {}
 
-    def ingresar(self):
-        print("=== Ingreso de Repartidor ===")
-        nombreAux = input("Ingrese el nombre del repartidor: ")
-        if not nombreAux.lower() not in self.repartidores:
-            print("Ese repartidor ya existe.")
-            return
+def mostrarOriginal(repartidores):
+    print("\n=== REGISTRO ORIGINAL ===")
+    for nombre in repartidores:
+        print(f"Nombre: {nombre}")
+        print(f"  Zona: {repartidores[nombre]['zona']}")
+        print(f"  Paquetes entregados: {repartidores[nombre]['paquetes']}")
 
-        try:
-            paquetesAux = int(input("Ingrese la cantidad de paquetes entregados: "))
-            if paquetesAux < 0:
-                print("La cantidad no puede ser negativa.")
-                return
-            nuevo = Repartidor(nombreAux, paquetesAux)
-            self.repartidores[nombreAux.lower()] = nuevo
-            print("Repartidor agregado correctamente.")
-        except ValueError:
-            print("Cantidad invalida. Debe ser un numero entero.")
 
-    def quick_sort(self, lista):
-        if len(lista) <= 1:
-            return lista
-        else:
-            pivote = lista[0]
-            mayores = [x for x in lista[1:] if x.paquetes > pivote.paquetes]
-            iguales = [x for x in lista if x.paquetes == pivote.paquetes]
-            menores = [x for x in lista[1:] if x.paquetes < pivote.paquetes]
-            return self.quick_sort(mayores) + iguales + self.quick_sort(menores)
+def quickSort(nombres, repartidores):
+    if len(nombres) <= 1:
+        return nombres
+    else:
+        pivote = repartidores[nombres[0]]['paquetes']
+        menores = [x for x in nombres[1:] if repartidores[x]['paquetes'] > pivote]
+        iguales = [x for x in nombres if repartidores[x]['paquetes'] == pivote]
+        mayores = [x for x in nombres[1:] if repartidores[x]['paquetes'] < pivote]
+        return quickSort(menores, repartidores) + iguales + quickSort(mayores, repartidores)
 
-    def mostrar_ranking(self):
-        print("=== Ranking de Repartidores ===")
-        ordenados = self.ordenar_por_paquetes()
-        i = 1
-        for r in ordenados:
-            print(f"{i}. {r}")
-            i += 1
+
+def mostrarRanking(repartidores):
+    ordenados = quickSort(list(repartidores.keys()), repartidores)
+    print("\n=== RANKING DE REPARTIDORES ===")
+    for i in range(len(ordenados)):
+        nombre = ordenados[i]
+        print(f"{i+1}. {nombre} - Paquetes: {repartidores[nombre]['paquetes']}")
+
+
+def buscarRepartidor(repartidores):
+    nombre = input("Nombre a buscar: ")
+    if nombre in repartidores:
+        print(f"Zona: {repartidores[nombre]['zona']}")
+        print(f"Paquetes: {repartidores[nombre]['paquetes']}")
+    else:
+        print("Repartidor no encontrado.")
+
+
+def estadisticasExtras(repartidores):
+    if not repartidores:
+        print("No hay datos.")
+        return
+    total = sum([repartidores[n]["paquetes"] for n in repartidores])
+    promedio = total / len(repartidores)
+    print(f"Total de paquetes entregados: {total}")
+    print(f"Promedio de paquetes por repartidor: {promedio:.2f}")
+
+
+
+repartidores = {}
+
+while True:
+    print("\n--- MENÚ ---")
+    print("1. Ingresar repartidores")
+    print("2. Mostrar registro original")
+    print("3. Ordenar y mostrar ranking")
+    print("4. Buscar repartidor")
+    print("5. Estadísticas extras")
+    print("6. Salir")
+    opcion = input("Opción: ")
+
+    match opcion:
+        case "1":
+            repartidores = ingresarRepartidores()
+        case "2":
+            mostrarOriginal(repartidores)
+        case "3":
+            mostrarRanking(repartidores)
+        case "4":
+            buscarRepartidor(repartidores)
+        case "5":
+            estadisticasExtras(repartidores)
+        case "6":
+            print("Saliendo del programa...")
+            break
+        case _:
+            print("Opción inválida.")
