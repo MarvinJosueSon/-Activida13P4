@@ -27,3 +27,13 @@ class EmpresaMensajeria:
             print("Repartidor agregado correctamente.")
         except ValueError:
             print("Cantidad invalida. Debe ser un numero entero.")
+
+    def quick_sort(self, lista):
+        if len(lista) <= 1:
+            return lista
+        else:
+            pivote = lista[0]
+            mayores = [x for x in lista[1:] if x.paquetes > pivote.paquetes]
+            iguales = [x for x in lista if x.paquetes == pivote.paquetes]
+            menores = [x for x in lista[1:] if x.paquetes < pivote.paquetes]
+            return self.quick_sort(mayores) + iguales + self.quick_sort(menores)
