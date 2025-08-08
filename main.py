@@ -6,3 +6,24 @@ class Repartidor:
     def __str__(self):
         return self.nombre + " " + self.paquetes + " " + self.zona
 
+class EmpresaMensajeria:
+    def __init__(self):
+        self.repartidores = {}
+
+    def ingresar(self):
+        print("=== Ingreso de Repartidor ===")
+        nombreAux = input("Ingrese el nombre del repartidor: ")
+        if not nombreAux.lower() not in self.repartidores:
+            print("Ese repartidor ya existe.")
+            return
+
+        try:
+            paquetesAux = int(input("Ingrese la cantidad de paquetes entregados: "))
+            if paquetesAux < 0:
+                print("La cantidad no puede ser negativa.")
+                return
+            nuevo = Repartidor(nombreAux, paquetesAux)
+            self.repartidores[nombreAux.lower()] = nuevo
+            print("Repartidor agregado correctamente.")
+        except ValueError:
+            print("Cantidad invalida. Debe ser un numero entero.")
